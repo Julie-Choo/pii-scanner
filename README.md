@@ -1,0 +1,203 @@
+# README.md
+# 🔍 PII Scanner
+
+A comprehensive, modular PII (Personally Identifiable Information) detection and anonymization system using Microsoft Presidio.
+
+## ✨ Features
+
+- 🔍 **Advanced PII Detection**: Detects 15+ types of PII with high accuracy
+- 🎭 **Smart Anonymization**: Context-aware anonymization with multiple strategies
+- 📁 **Multi-Format Support**: Scan text, CSV, JSON, and more file types
+- 💻 **Web Interface**: User-friendly Streamlit application
+- 🌐 **REST API**: FastAPI-based service for integration
+- 🧪 **Comprehensive Testing**: Full test suite with >90% coverage
+- 📊 **Rich Analytics**: Detailed reporting and visualization
+- 🔧 **Highly Configurable**: Flexible configuration system
+- 🏗️ **Modular Architecture**: Easy to extend and maintain
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Python 3.8+
+- pip package manager
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/pii-scanner.git
+cd pii-scanner
+
+# Create virtual environment
+python -m venv .venv
+
+# Activate virtual environment
+# Windows:
+.venv\Scripts\activate
+# macOS/Linux:
+source .venv/bin/activate
+
+# Install the package
+pip install -e .
+
+# Download spaCy model
+python -m spacy download en_core_web_sm
+```
+
+### Basic Usage
+
+```python
+from pii_scanner import scan_text, anonymize_text
+
+# Scan text for PII
+text = "Contact John Doe at john.doe@company.com or call (555) 123-4567"
+result = scan_text(text)
+
+print(f"Found {result.total_entities} PII entities:")
+for match in result.matches:
+    print(f"  • {match.entity_type}: {match.anonymized_text}")
+
+# Anonymize text
+anonymized = anonymize_text(text)
+print(f"Anonymized: {anonymized}")
+```
+
+### Web Applications
+
+**Streamlit Web Interface:**
+```bash
+streamlit run apps/streamlit/app.py
+# Open http://localhost:8501
+```
+
+**FastAPI Service:**
+```bash
+python apps/api/main.py
+# API docs at http://localhost:8000/docs
+```
+
+## 📖 Documentation
+
+- [**API Reference**](docs/API.md) - Detailed API documentation
+- [**Usage Guide**](docs/USAGE.md) - Examples and use cases
+- [**Development Guide**](docs/DEVELOPMENT.md) - Contributing and extending
+- [**Configuration**](docs/CONFIGURATION.md) - Configuration options
+
+## 🏗️ Architecture
+
+```
+pii-scanner/
+├── src/pii_scanner/          # Core package
+│   ├── core/                 # Scanner engine
+│   ├── file_handlers/        # File type handlers
+│   └── utils/                # Utilities
+├── apps/                     # Applications
+│   ├── streamlit/            # Web interface
+│   └── api/                  # REST API
+├── tests/                    # Test suite
+├── config/                   # Configuration
+└── docs/                     # Documentation
+```
+
+## 🧪 Testing
+
+```bash
+# Run all tests
+python scripts/run_tests.py
+
+# Run specific test module
+pytest tests/test_core/
+
+# Run with coverage
+pytest tests/ --cov=pii_scanner --cov-report=html
+```
+
+## 🔧 Development
+
+### Setup Development Environment
+
+```bash
+# Install with development dependencies
+pip install -e ".[dev]"
+
+# Install pre-commit hooks (optional)
+pre-commit install
+
+# Run code formatting
+black src/ apps/ tests/
+flake8 src/ apps/ tests/
+```
+
+### Adding New File Handlers
+
+```python
+from pii_scanner.file_handlers.base import BaseFileHandler
+
+class MyFileHandler(BaseFileHandler):
+    def can_handle(self, file_info):
+        return file_info.extension == '.myformat'
+    
+    def scan_file(self, file_info, options):
+        # Implementation here
+        pass
+```
+
+## 🚀 Deployment
+
+### Docker Deployment
+
+```bash
+# Build image
+docker build -t pii-scanner .
+
+# Run API service
+docker run -p 8000:8000 pii-scanner
+
+# Run with docker-compose
+docker-compose up -d
+```
+
+### Production Configuration
+
+1. Copy `.env.example` to `.env`
+2. Update configuration in `config/production.yaml`
+3. Set appropriate environment variables
+4. Use a production WSGI server (e.g., Gunicorn)
+
+## 📊 Supported PII Types
+
+| Type | Description | Example |
+|------|-------------|---------|
+| EMAIL_ADDRESS | Email addresses | john@example.com |
+| PHONE_NUMBER | Phone numbers | (555) 123-4567 |
+| US_SSN | Social Security Numbers | 123-45-6789 |
+| CREDIT_CARD | Credit card numbers | 4532-1234-5678-9012 |
+| PERSON | Person names | John Doe |
+| LOCATION | Addresses/locations | New York, NY |
+| IP_ADDRESS | IP addresses | 192.168.1.1 |
+| US_DRIVER_LICENSE | Driver licenses | D123456789 |
+| US_PASSPORT | Passport numbers | AB1234567 |
+| CRYPTO | Cryptocurrency addresses | 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa |
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Add tests for new functionality
+5. Run the test suite (`python scripts/run_tests.py`)
+6. Commit your changes (`git commit -am 'Add amazing feature'`)
+7. Push to the branch (`git push origin feature/amazing-feature`)
+8. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- [Microsoft Presidio](https://github.com/microsoft/presidio) for the core PII detection engine
+- [spaCy](https://spacy.io/) for natural language processing
+- [FastAPI](https://fastapi.tiangolo.com/) for the REST API framework
+- [Streamlit](https://streamlit.io/) for the web interface

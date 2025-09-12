@@ -1,0 +1,18 @@
+# config/production.yaml
+# Production environment configuration
+
+scanner:
+  confidence_threshold: 0.7  # Higher threshold for production
+
+logging:
+  level: INFO
+  file: logs/pii_scanner.log
+
+api:
+  cors_origins:
+    - "https://yourdomain.com"
+  max_request_size_mb: 10
+
+file_processing:
+  max_file_size_mb: 10
+  max_batch_size: 50

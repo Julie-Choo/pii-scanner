@@ -1,0 +1,14 @@
+# tests/fixtures/sample_data.txt
+Contact Information for Testing:
+
+John Smith
+Email: john.smith@company.com
+Phone: (555) 123-4567
+SSN: 123-45-6789
+Address: 123 Main Street, Anytown, NY 10001
+
+Jane Doe  
+Email: jane.doe@email.com
+Phone: 555-987-6543
+Driver License: NY123456789
+Credit Card: 4532-1234-5678-9012

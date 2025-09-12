@@ -1,0 +1,14 @@
+# config/development.yaml
+# Development environment overrides
+
+scanner:
+  confidence_threshold: 0.3  # Lower threshold for testing
+
+logging:
+  level: DEBUG
+
+api:
+  port: 8000
+  cors_origins:
+    - "http://localhost:3000"
+    - "http://localhost:8501"
