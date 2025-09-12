@@ -9,6 +9,7 @@ from .base import BaseFileHandler
 from ..core.models import FileInfo, ScanResult, ScanOptions, PIIMatch
 from ..exceptions import FileHandlerError
 from ..utils.logger import get_logger
+from typing import List
 
 logger = get_logger(__name__)
 
