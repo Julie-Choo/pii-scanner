@@ -14,7 +14,7 @@ sys.path.insert(0, str(project_root / "src"))
 
 def main():
     """Run Streamlit application"""
-    streamlit_app = project_root / "apps" / "streamlit" / "app.py"
+    streamlit_app = project_root / "ui" / "streamlit" / "app.py"
     
     if not streamlit_app.exists():
         print(f"❌ Streamlit app not found at: {streamlit_app}")
