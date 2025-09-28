@@ -6,6 +6,8 @@
   "keywords": ["pii", "data-generator", "privacy", "testing", "icd10"],
   "author": "Your Name",
   "license": "MIT",
+  "main": "./build/electron.js",
+  "homepage": "./",
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -15,10 +17,20 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "electron": "electron .",
+    "electron-dev": "concurrently \"npm start\" \"wait-on http://localhost:3000 && electron .\"",
+    "electron-pack": "electron-builder",
+    "preelectron-pack": "npm run build",
+    "dist": "npm run build && electron-builder --publish=never"
   },
   "devDependencies": {
-    "react-scripts": "5.0.1"
+    "react-scripts": "5.0.1",
+    "electron": "^latest",
+    "electron-builder": "^latest",
+    "electron-is-dev": "^latest",
+    "concurrently": "^latest",
+    "wait-on": "^latest"
   },
   "eslintConfig": {
     "extends": [
@@ -37,5 +49,36 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "build": {
+    "appId": "com.yourname.pii-data-generator",
+    "productName": "PII Data Generator",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "build/**/*",
+      "node_modules/**/*",
+      "electron.js"
+    ],
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "target": {
+        "target": "dmg",
+        "arch": ["x64", "arm64"]
+      }
+    },
+    "win": {
+      "target": {
+        "target": "nsis",
+        "arch": ["x64"]
+      }
+    },
+    "linux": {
+      "target": {
+        "target": "AppImage",
+        "arch": ["x64"]
+      }
+    }
   }
 }
