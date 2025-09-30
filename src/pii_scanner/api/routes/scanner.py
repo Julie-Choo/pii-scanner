@@ -93,7 +93,7 @@ async def scan_file(
         raise HTTPException(status_code=503, detail="Scanner not ready")
     
     # Check file size (10MB limit)
-    max_size = 10 * 1024 * 1024
+    max_size = 200 * 1024 * 1024
     if file.size and file.size > max_size:
         raise HTTPException(status_code=413, detail=f"File too large (max {max_size//1024//1024}MB)")
     

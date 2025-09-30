@@ -23,7 +23,7 @@ def render_file_scanner(scanner, confidence_threshold):
         accept_multiple_files=True,
         help="Supported formats: TXT, CSV, JSON, LOG, MD"
     )
-    
+
     if not uploaded_files:
         # Show supported formats
         st.info("📋 **Supported File Formats:**")

@@ -5,6 +5,7 @@ const PiiDataGenerator = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [previewData, setPreviewData] = useState([]);
+  const [rowCount, setRowCount] = useState(100000); // Default to 100k
 
   // Data dictionary defining all 50 columns
   const dataDictionary = [
@@ -260,6 +261,29 @@ const PiiDataGenerator = () => {
     setShowPreview(true);
   };
 
+  // Handle row count input changes
+  const handleRowCountChange = (e) => {
+    const value = parseInt(e.target.value) || 0;
+    const cappedValue = Math.min(Math.max(value, 1), 100000); // Cap between 1 and 100,000
+    setRowCount(cappedValue);
+  };
+
+  // Calculate estimated file size and time
+  const getEstimates = () => {
+    const sizePerRow = 0.5; // Approximate KB per row
+    const estimatedSizeKB = rowCount * sizePerRow;
+    const estimatedSizeMB = (estimatedSizeKB / 1024).toFixed(1);
+    
+    const timePerThousandRows = 1.2; // Approximate seconds per 1000 rows
+    const estimatedTimeSeconds = (rowCount / 1000) * timePerThousandRows;
+    const estimatedTimeMinutes = (estimatedTimeSeconds / 60).toFixed(1);
+    
+    return {
+      size: estimatedSizeKB > 1024 ? `~${estimatedSizeMB}MB` : `~${Math.round(estimatedSizeKB)}KB`,
+      time: estimatedTimeSeconds > 60 ? `~${estimatedTimeMinutes} minutes` : `~${Math.round(estimatedTimeSeconds)} seconds`
+    };
+  };
+
   const generateAndDownloadData = useCallback(async () => {
     setIsGenerating(true);
     
@@ -270,14 +294,15 @@ const PiiDataGenerator = () => {
       
       // Generate data in chunks to avoid memory issues
       const chunkSize = 1000;
-      const totalRows = 100000;
+      const totalRows = rowCount; // Use the user-specified row count
       
-      for (let chunk = 0; chunk < totalRows / chunkSize; chunk++) {
+      for (let chunk = 0; chunk < Math.ceil(totalRows / chunkSize); chunk++) {
         let chunkData = '';
+        const chunkStart = chunk * chunkSize + 1;
+        const chunkEnd = Math.min((chunk + 1) * chunkSize, totalRows);
         
-        for (let i = 1; i <= chunkSize; i++) {
-          const rowId = chunk * chunkSize + i;
-          const row = generateRow(rowId);
+        for (let i = chunkStart; i <= chunkEnd; i++) {
+          const row = generateRow(i);
           
           const rowValues = dataDictionary.map(col => {
             const value = row[col.column];
@@ -299,7 +324,7 @@ const PiiDataGenerator = () => {
       const link = document.createElement('a');
       const url = URL.createObjectURL(blob);
       link.setAttribute('href', url);
-      link.setAttribute('download', 'pii_test_data_100k.csv');
+      link.setAttribute('download', `pii_test_data_${rowCount.toLocaleString()}.csv`);
       link.style.visibility = 'hidden';
       document.body.appendChild(link);
       link.click();
@@ -311,7 +336,7 @@ const PiiDataGenerator = () => {
     } finally {
       setIsGenerating(false);
     }
-  }, []);
+  }, [rowCount]);
 
   const downloadDataDictionary = () => {
     const headers = ['Column Name', 'Data Type', 'Description', 'Sensitive', 'Expected Completeness %'].join(',');
@@ -331,6 +356,8 @@ const PiiDataGenerator = () => {
     document.body.removeChild(link);
   };
 
+  const estimates = getEstimates();
+
   return (
     <div className="max-w-7xl mx-auto p-6 space-y-6">
       <div className="bg-white rounded-lg shadow-lg p-6">
@@ -339,15 +366,47 @@ const PiiDataGenerator = () => {
           PII Test Data Generator
         </h1>
         <p className="text-gray-600 mb-6">
-          Generate a realistic dataset with 50 columns and 100,000 rows containing mixed sensitive and non-sensitive data.
+          Generate a realistic dataset with 50 columns containing mixed sensitive and non-sensitive data.
           Includes varying completeness rates, realistic data entry errors, and authentic ICD-10-CM codes and NDC numbers 
           from official public sources (WHO/CDC/FDA).
         </p>
         
+        {/* Row Count Input Section */}
+        <div className="bg-gray-50 rounded-lg p-4 mb-6">
+          <h3 className="text-lg font-semibold text-gray-800 mb-3">Dataset Configuration</h3>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="rowCount" className="block text-sm font-medium text-gray-700 mb-2">
+                Number of Rows (Maximum: 100,000)
+              </label>
+              <input
+                id="rowCount"
+                type="number"
+                min="1"
+                max="100000"
+                value={rowCount}
+                onChange={handleRowCountChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Enter number of rows"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Enter 1-100,000 rows. Larger datasets take longer to generate.
+              </p>
+            </div>
+            <div className="flex flex-col justify-center">
+              <div className="bg-blue-50 p-3 rounded">
+                <p className="text-sm font-medium text-blue-800">Estimated Output:</p>
+                <p className="text-sm text-blue-700">File size: {estimates.size}</p>
+                <p className="text-sm text-blue-700">Generation time: {estimates.time}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
         <div className="grid md:grid-cols-3 gap-4 mb-6">
           <div className="bg-blue-50 p-4 rounded-lg">
             <h3 className="font-semibold text-blue-900">Dataset Size</h3>
-            <p className="text-blue-700">50 columns × 100,000 rows</p>
+            <p className="text-blue-700">50 columns × {rowCount.toLocaleString()} rows</p>
           </div>
           <div className="bg-red-50 p-4 rounded-lg">
             <h3 className="font-semibold text-red-900">Sensitive Fields</h3>
@@ -362,11 +421,11 @@ const PiiDataGenerator = () => {
         <div className="flex flex-wrap gap-4 mb-6">
           <button
             onClick={generateAndDownloadData}
-            disabled={isGenerating}
+            disabled={isGenerating || rowCount < 1}
             className="flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
           >
             <Download className="mr-2" size={20} />
-            {isGenerating ? 'Generating...' : 'Generate & Download Full Dataset'}
+            {isGenerating ? `Generating ${rowCount.toLocaleString()} rows...` : `Generate & Download ${rowCount.toLocaleString()} Rows`}
           </button>
           
           <button
@@ -389,7 +448,7 @@ const PiiDataGenerator = () => {
         <div className="bg-blue-50 border-l-4 border-blue-400 p-4">
           <h4 className="font-semibold text-blue-900 mb-2">What You'll Get:</h4>
           <ul className="text-blue-800 text-sm space-y-1">
-            <li>• <strong>Full Dataset:</strong> 100,000 rows × 50 columns CSV file (~50MB)</li>
+            <li>• <strong>Custom Dataset:</strong> {rowCount.toLocaleString()} rows × 50 columns ({estimates.size})</li>
             <li>• <strong>Data Dictionary:</strong> Complete column definitions with sensitivity flags</li>
             <li>• <strong>Real Medical Codes:</strong> 75+ authentic ICD-10-CM codes, 20+ NDC numbers</li>
             <li>• <strong>Realistic Errors:</strong> 5% data entry mistakes (O/0, I/1 confusion)</li>
@@ -439,7 +498,7 @@ const PiiDataGenerator = () => {
           <div className="flex">
             <div className="ml-3">
               <p className="text-sm text-yellow-700">
-                Generating 100,000 rows of data... This may take a few moments.
+                Generating {rowCount.toLocaleString()} rows of data... Estimated time: {estimates.time}
               </p>
             </div>
           </div>

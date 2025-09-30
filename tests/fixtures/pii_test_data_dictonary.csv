@@ -1,0 +1,51 @@
+Column Name,Data Type,Description,Sensitive,Expected Completeness %
+record_id,INTEGER,"Unique record identifier",No,100
+first_name,VARCHAR(50),"Employee first name",Yes,98
+middle_name,VARCHAR(50),"Employee middle name",Yes,45
+last_name,VARCHAR(50),"Employee last name",Yes,98
+maiden_name,VARCHAR(50),"Previous/maiden name",Yes,25
+ssn,VARCHAR(11),"Social Security Number",Yes,85
+email,VARCHAR(100),"Primary email address",Yes,92
+phone_primary,VARCHAR(15),"Primary phone number",Yes,88
+phone_mobile,VARCHAR(15),"Mobile phone number",Yes,75
+address_street,VARCHAR(200),"Street address",Yes,90
+address_city,VARCHAR(100),"City name",Yes,90
+address_state,VARCHAR(50),"State/Province",Yes,90
+address_zip,VARCHAR(10),"ZIP/Postal code",Yes,88
+latitude,DECIMAL(10,8),"Geographic latitude",Yes,35
+longitude,DECIMAL(11,8),"Geographic longitude",Yes,35
+drivers_license,VARCHAR(20),"Driver license number",Yes,70
+passport_number,VARCHAR(15),"Passport number",Yes,40
+military_id,VARCHAR(15),"Military identification",Yes,15
+bank_account,VARCHAR(20),"Bank account number",Yes,65
+routing_number,VARCHAR(9),"Bank routing number",Yes,65
+credit_card,VARCHAR(19),"Credit card number",Yes,55
+medical_code_primary,VARCHAR(10),"Primary ICD-10-CM diagnosis code",Yes,30
+medical_code_secondary,VARCHAR(10),"Secondary ICD-10-CM diagnosis code",Yes,15
+prescription_drug,VARCHAR(100),"FDA-approved medication name",Yes,25
+drug_ndc,VARCHAR(15),"National Drug Code (FDA format)",Yes,20
+dosage,VARCHAR(50),"Medication dosage",Yes,22
+age,INTEGER,"Employee age",No,95
+department,VARCHAR(100),"Work department",No,98
+job_title,VARCHAR(100),"Job position title",No,97
+hire_date,DATE,"Employment start date",No,99
+salary_band,VARCHAR(20),"Salary range category",No,85
+employee_status,VARCHAR(20),"Employment status",No,100
+manager_id,INTEGER,"Manager employee ID",No,90
+office_location,VARCHAR(100),"Primary office location",No,95
+favorite_color,VARCHAR(30),"Preferred color",No,60
+hobby,VARCHAR(100),"Primary hobby/interest",No,70
+pet_type,VARCHAR(50),"Type of pet owned",No,55
+education_level,VARCHAR(50),"Highest education completed",No,85
+marital_status,VARCHAR(20),"Marital status",No,75
+emergency_contact_name,VARCHAR(100),"Emergency contact person",Yes,80
+emergency_contact_phone,VARCHAR(15),"Emergency contact phone",Yes,78
+shirt_size,VARCHAR(10),"T-shirt size preference",No,65
+cafeteria_plan,VARCHAR(50),"Meal plan selection",No,70
+parking_spot,VARCHAR(20),"Assigned parking space",No,40
+team_name,VARCHAR(100),"Project team assignment",No,85
+skills,TEXT,"Professional skills list",No,80
+certifications,TEXT,"Professional certifications",No,45
+language_spoken,VARCHAR(100),"Primary language",No,90
+work_schedule,VARCHAR(50),"Work schedule type",No,95
+created_timestamp,TIMESTAMP,"Record creation time",No,100
